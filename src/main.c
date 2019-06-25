@@ -123,6 +123,7 @@ nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     usart_enable(USART3);
 
 }
+
 void delay_setup(void)
 {
 	/* set up a microsecond free running timer for ... things... */
@@ -132,6 +133,7 @@ void delay_setup(void)
 	timer_set_period(TIM6, 0xffff);
 	timer_one_shot_mode(TIM6);
 }
+
 void delay_us(uint16_t us)
 {
 	TIM_ARR(TIM6) = us;
@@ -140,6 +142,7 @@ void delay_us(uint16_t us)
 	//timer_enable_counter(TIM6);
 	while (TIM_CR1(TIM6) & TIM_CR1_CEN);
 }
+
 void delay_ms(uint16_t ms)
 {
     uint16_t i;
@@ -148,6 +151,7 @@ void delay_ms(uint16_t ms)
         delay_us(1000);
     }
 }
+
 void usart_setup(void)
 {
     rcc_periph_clock_enable(RCC_GPIOA);
@@ -222,6 +226,7 @@ void usart_setup(void)
     /* Finally enable the USART. */
     usart_enable(USART3);
 }
+
 void handleEls()
 {
 
@@ -249,135 +254,116 @@ void handleEls()
 void changePage()
 {
     int i = sprintf(nextionOutBuf, "page %i", mode);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
 }
 void updateMode(uint16_t page)
 {
-    //Threading button
 
     int i = sprintf(elsOutBuf, "SET_MODE,%s,\n", modes[page]);
     elsWrite(i);
 }
+
 uint16_t getPage()
 {
     uint16_t i;
 
     i = sprintf(nextionOutBuf, "sendme");
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
     pageRequested = 1;
-//    i = waitNextionInput(retArray,0x66);
-//    i = retArray[i];
-
-//    return i;
-
-
 
 }
 void cancelEdit()
 {
     delay_ms(100);
     int i = sprintf(nextionOutBuf, "click b251,0");
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
 }
+
 void nextionWrite(int len)
 {
     int i;
-
-
     for(i = 0; i<len; i++)
         usart_send_blocking(USART3, nextionOutBuf[i]);
-
 }
 
 void elsWrite(int len)
 {
     int i;
-
     for(i = 0; i<len; i++)
         usart_send_blocking(USART1, elsOutBuf[i]);
 
 }
+
 void updateButtons()
 {
     uint16_t i;
     //buttons updated when status changes
 
-            if(status == IDLE)
-            {
-                i = sprintf(nextionOutBuf,"tsw b0,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b1,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b2,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b6,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
+    if(status == IDLE)
+    {
+        i = sprintf(nextionOutBuf,"tsw b0,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b1,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b2,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b6,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
 
-                i = sprintf(nextionOutBuf,"tsw t5,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw t7,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw t10,1");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t5,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t7,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t10,1");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
 
-                i = sprintf(nextionOutBuf,"b3.txt=\"START\"");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-            }
-            else
-            {
-                //disable all buttons and edits
+        i = sprintf(nextionOutBuf,"b3.txt=\"START\"");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+    }
+    else
+    {
+        //disable all buttons and edits
 
-                i = sprintf(nextionOutBuf,"tsw b0,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b1,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b2,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw b6,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b0,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b1,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b2,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw b6,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
 
-                i = sprintf(nextionOutBuf,"tsw t5,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw t7,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
-                i = sprintf(nextionOutBuf,"tsw t10,0");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t5,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t7,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"tsw t10,0");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
 
 
-                i = sprintf(nextionOutBuf,"b3.txt=\"STOP\"");
-            nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-                nextionWrite(i+3);
+        i = sprintf(nextionOutBuf,"b3.txt=\"STOP\"");
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+        nextionWrite(i+3);
 
-            }
-
-}
-void updatePage0()
-{
-    uint16_t i;
-    int j = (int)status;
-    //feed pitch
-    i = sprintf(nextionOutBuf, "t5.txt=\"%4.2f\"", pitch);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
-    nextionWrite(i+3);
-
+    }
 
 }
 void updateStatus()
@@ -386,33 +372,46 @@ void updateStatus()
     uint16_t i;
     int j = (int)status;
     i = sprintf(nextionOutBuf, "t0.txt=\"%s\"", statuses[j]);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
     j = (int)mode;
     i = sprintf(nextionOutBuf, "t2.txt=\"%s\"", modes[j]);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
     //rpm
     i = sprintf(nextionOutBuf, "n0.val=%i", (int)(rpm*60));
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
 
 }
+
+void updatePage0()
+{
+    uint16_t i;
+    int j = (int)status;
+    //feed pitch
+    i = sprintf(nextionOutBuf, "t5.txt=\"%4.2f\"", pitch);
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionWrite(i+3);
+
+
+}
+
 void updatePage1()
 {
     uint16_t i;
     int j = (int)status;
     //feed pitch
     i = sprintf(nextionOutBuf, "t5.txt=\"%4.2f\"", pitch);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
     //dist
     i = sprintf(nextionOutBuf, "t7.txt=\"%4.2f\"", distance);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
     //position
     i = sprintf(nextionOutBuf, "t10.txt=\"%4.2f\"", position);
-nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
+    nextionOutBuf[i] = 0xFF; nextionOutBuf[i+1]=0xFF; nextionOutBuf[i+2] = 0xFF;
     nextionWrite(i+3);
 
 }
@@ -483,18 +482,7 @@ void handleNextion()
         case 0x65:
             //button pressed
             //page0 buttons
-/*            if(nextionBuf[1] == 0 && nextionBuf[2] == 2 && nextionBuf[3] == 1)
-            {
-                //Threading button
-                i = sprintf(outBuf, "SET_MODE,THREAD,\n");
-                elsWrite(i);
-            }
-            else if(nextionBuf[1] == 0 && nextionBuf[2] == 3 && nextionBuf[3] == 0)
-            {
-                //Indexing button
-                i = sprintf(outBuf, "SET_MODE,INDEX,\n");
-                elsWrite(i);
-            }*/
+
             if(nextionBuf[1] == 0 && nextionBuf[2] == 9 && nextionBuf[3] == 1)
             {
                 //START button
@@ -514,19 +502,8 @@ void handleNextion()
                     cancelEdit();
             }
 
-    /*        //page1 buttons
-            else if(nextionBuf[1] == 1 && nextionBuf[2] == 1 && nextionBuf[3] == 1)
-            {
-                //Basic button
-                i = sprintf(outBuf, "SET_MODE,BASIC,\n");
-                elsWrite(i);
-            }
-            else if(nextionBuf[1] == 1 && nextionBuf[2] == 3 && nextionBuf[3] == 0)
-            {
-                //Indexing button
-                i = sprintf(outBuf, "SET_MODE,INDEX,\n");
-                elsWrite(i);
-            }*/
+            //page1 buttons
+
             else if(nextionBuf[1] == 1 && nextionBuf[2] == 0x10 && nextionBuf[3] == 1)
             {
                 //Set button of position
@@ -566,6 +543,7 @@ void handleNextion()
             pageRequested = 0;
             break;
         case 0x70:
+            //received a text field value which was requested earlier
             switch (guiState)
             {
                 case GUI_IDLE:
